@@ -22,7 +22,7 @@ A Swift-native MCP (Model Context Protocol) server for PDF document manipulation
 ### Build from Source
 
 ```bash
-git clone https://github.com/kiki830621/che-pdf-mcp.git
+git clone https://github.com/PsychQuant/che-pdf-mcp.git
 cd che-pdf-mcp
 swift build -c release
 ```
@@ -83,7 +83,7 @@ Core workflow:
 ```bash
 mkdir -p .claude/skills/che-pdf-mcp
 curl -o .claude/skills/che-pdf-mcp/SKILL.md \
-  https://raw.githubusercontent.com/kiki830621/che-pdf-mcp/main/skills/che-pdf-mcp/SKILL.md
+  https://raw.githubusercontent.com/PsychQuant/che-pdf-mcp/main/skills/che-pdf-mcp/SKILL.md
 ```
 
 ## Available Tools (25 Tools)
@@ -261,9 +261,9 @@ MIT License
 
 ## Author
 
-Che Cheng ([@kiki830621](https://github.com/kiki830621))
+Che Cheng ([@kiki830621](https://github.com/PsychQuant))
 
 ## Related Projects
 
-- [che-word-mcp](https://github.com/kiki830621/che-word-mcp) - Word document MCP server
-- [che-apple-mail-mcp](https://github.com/kiki830621/che-apple-mail-mcp) - Apple Mail MCP server
+- [che-word-mcp](https://github.com/PsychQuant/che-word-mcp) - Word document MCP server
+- [che-apple-mail-mcp](https://github.com/PsychQuant/che-apple-mail-mcp) - Apple Mail MCP server
