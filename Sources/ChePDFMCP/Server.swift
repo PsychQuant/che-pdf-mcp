@@ -1210,13 +1210,13 @@ actor PDFMCPServer {
                             contents.append(.image(
                                 data: imageData,
                                 mimeType: "image/png",
-                                metadata: [
-                                    "page": "\(i + 1)",
-                                    "region": "\(j + 1)",
-                                    "width": "\(Int(region.bounds.width))",
-                                    "height": "\(Int(region.bounds.height))",
-                                    "reason": "garbled_formula_detected"
-                                ]
+                                metadata: Metadata(additionalFields: [
+                                    "page": .string("\(i + 1)"),
+                                    "region": .string("\(j + 1)"),
+                                    "width": .string("\(Int(region.bounds.width))"),
+                                    "height": .string("\(Int(region.bounds.height))"),
+                                    "reason": .string("garbled_formula_detected")
+                                ])
                             ))
                         } catch {
                             // If region rendering fails, skip it
