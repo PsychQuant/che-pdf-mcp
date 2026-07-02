@@ -50,6 +50,10 @@ if gh release view "v$VERSION" --repo "$REPO" >/dev/null 2>&1; then
     echo "error: release v$VERSION already exists on $REPO" >&2; exit 3
 fi
 
+echo "→ [0.5/7] version-constant sync gate (#3)"
+grep -q "serverVersion = \"$VERSION\"" Sources/ChePDFMCP/Server.swift \
+    || { echo "error: Sources/ChePDFMCP/Server.swift serverVersion != $VERSION — bump the constant so the binary self-reports the release tag (#3)" >&2; exit 3; }
+
 echo "→ [1/7] universal release build"
 swift build -c release --arch arm64 --arch x86_64
 BIN=".build/apple/Products/Release/$BINARY_NAME"

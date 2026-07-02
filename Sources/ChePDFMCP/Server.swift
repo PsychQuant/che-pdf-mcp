@@ -7,6 +7,11 @@ import AppKit
 // MARK: - PDF MCP Server
 
 actor PDFMCPServer {
+    /// Single source of truth for the server's self-reported version.
+    /// MUST equal the release tag (scripts/release.sh pre-flight enforces
+    /// this mechanically — PsychQuant/che-pdf-mcp#3). Bump when releasing.
+    static let serverVersion = "0.2.0"
+
     private let server: Server
     private let transport: StdioTransport
     private var openDocuments: [String: PDFDocument] = [:]
@@ -14,7 +19,7 @@ actor PDFMCPServer {
     init() {
         self.server = Server(
             name: "che-pdf-mcp",
-            version: "1.0.0"
+            version: Self.serverVersion
         )
         self.transport = StdioTransport()
     }
