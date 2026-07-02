@@ -36,7 +36,7 @@ actor PDFMCPServer {
 
         await server.withMethodHandler(CallTool.self) { [weak self] params in
             guard let self = self else {
-                return CallTool.Result(content: [.text("Server unavailable")], isError: true)
+                return CallTool.Result(content: [.text(text: "Server unavailable", annotations: nil, _meta: nil)], isError: true)
             }
             return try await self.handleToolCall(params)
         }
@@ -638,10 +638,10 @@ actor PDFMCPServer {
 
             // Other tools return plain text
             let result = try await executeToolTask(name: name, args: args)
-            return CallTool.Result(content: [.text(result)])
+            return CallTool.Result(content: [.text(text: result, annotations: nil, _meta: nil)])
         } catch {
             return CallTool.Result(
-                content: [.text("Error: \(error.localizedDescription)")],
+                content: [.text(text: "Error: \(error.localizedDescription)", annotations: nil, _meta: nil)],
                 isError: true
             )
         }
@@ -1199,10 +1199,10 @@ actor PDFMCPServer {
 
                 if garbledRegions.isEmpty {
                     // No specific regions found, return plain text
-                    contents.append(.text("--- Page \(i + 1) ---\n\(pageText)\n\n"))
+                    contents.append(.text(text: "--- Page \(i + 1) ---\n\(pageText)\n\n", annotations: nil, _meta: nil))
                 } else {
                     // Return text + region images
-                    contents.append(.text("--- Page \(i + 1) ---\n\(pageText)\n"))
+                    contents.append(.text(text: "--- Page \(i + 1) ---\n\(pageText)\n", annotations: nil, _meta: nil))
 
                     for (j, region) in garbledRegions.enumerated() {
                         do {
@@ -1210,7 +1210,8 @@ actor PDFMCPServer {
                             contents.append(.image(
                                 data: imageData,
                                 mimeType: "image/png",
-                                metadata: Metadata(additionalFields: [
+                                annotations: nil,
+                                _meta: Metadata(additionalFields: [
                                     "page": .string("\(i + 1)"),
                                     "region": .string("\(j + 1)"),
                                     "width": .string("\(Int(region.bounds.width))"),
@@ -1226,12 +1227,12 @@ actor PDFMCPServer {
                 }
             } else {
                 // No garbled content, return plain text
-                contents.append(.text("--- Page \(i + 1) ---\n\(pageText)\n\n"))
+                contents.append(.text(text: "--- Page \(i + 1) ---\n\(pageText)\n\n", annotations: nil, _meta: nil))
             }
         }
 
         if contents.isEmpty {
-            return [.text("No content found in the specified pages")]
+            return [.text(text: "No content found in the specified pages", annotations: nil, _meta: nil)]
         }
 
         return contents
