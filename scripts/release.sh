@@ -51,7 +51,8 @@ if gh release view "v$VERSION" --repo "$REPO" >/dev/null 2>&1; then
 fi
 
 echo "→ [0.5/7] version-constant sync gate (#3)"
-grep -qE "serverVersion[[:space:]]*=[[:space:]]*\"$VERSION\"" Sources/ChePDFMCP/Server.swift \
+VERSION_RE=$(printf '%s' "$VERSION" | sed 's/\./\\./g')
+grep -qE "static let serverVersion[[:space:]]*=[[:space:]]*\"$VERSION_RE\"" Sources/ChePDFMCP/Server.swift \
     || { echo "error: Sources/ChePDFMCP/Server.swift serverVersion != $VERSION — bump the constant so the binary self-reports the released version (#3)" >&2; exit 3; }
 
 echo "→ [1/7] universal release build"
