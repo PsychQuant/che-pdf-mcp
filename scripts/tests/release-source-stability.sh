@@ -44,6 +44,20 @@ EOF
 cat > "$FAKE_PATH/swift" <<'EOF'
 #!/bin/bash
 if [ "${1:-}" = "test" ]; then exit 0; fi
+# Simulates Swift 6.4's build backend, which writes universal release
+# products to .build/out/Products/Release — NOT the .build/apple/Products/Release
+# path release.sh hard-coded before this gate (macdoc#163 / che-word-mcp#195).
+BIN_DIR=".build/out/Products/Release"
+for arg in "$@"; do
+    if [ "$arg" = "--show-bin-path" ]; then
+        # A bin-path query is read-only: it must NOT repeat the build's
+        # mutation side effects or re-touch the working tree/HEAD, or the
+        # source/HEAD-drift assertions below would double-fire.
+        mkdir -p "$BIN_DIR"
+        echo "$PWD/$BIN_DIR"
+        exit 0
+    fi
+done
 echo swift-build >> "$EVENT_LOG"
 case "${MUTATION_MODE:-none}" in
     file) echo changed-during-build >> source.txt ;;
@@ -54,12 +68,12 @@ case "${MUTATION_MODE:-none}" in
         /usr/bin/git commit -qm committed-during-build
         ;;
 esac
-mkdir -p .build/apple/Products/Release
-cat > ".build/apple/Products/Release/$BINARY_NAME" <<'BIN'
+mkdir -p "$BIN_DIR"
+cat > "$BIN_DIR/$BINARY_NAME" <<'BIN'
 #!/bin/bash
 echo test-binary
 BIN
-chmod +x ".build/apple/Products/Release/$BINARY_NAME"
+chmod +x "$BIN_DIR/$BINARY_NAME"
 EOF
 
 cat > "$FAKE_PATH/codesign" <<'EOF'

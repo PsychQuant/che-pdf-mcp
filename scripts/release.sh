@@ -74,7 +74,10 @@ grep -qE "static let serverVersion[[:space:]]*=[[:space:]]*\"$VERSION_RE\"" "$BU
 
 echo "→ [1/7] universal release build from isolated commit $SOURCE_HEAD"
 (cd "$BUILD_TREE" && swift build -c release --arch arm64 --arch x86_64)
-BIN="$BUILD_TREE/.build/apple/Products/Release/$BINARY_NAME"
+# Ask SwiftPM where it put the universal product instead of hard-coding it:
+# Swift 6.4's build backend writes to .build/out/Products/Release, not the
+# .build/apple/Products/Release this script assumed (macdoc#163 / che-word-mcp#195).
+BIN="$(cd "$BUILD_TREE" && swift build -c release --arch arm64 --arch x86_64 --show-bin-path)/$BINARY_NAME"
 [[ -f "$BIN" ]] || { echo "error: built binary not found at $BIN" >&2; exit 4; }
 
 BUILD_HEAD_AFTER=$(git -C "$BUILD_TREE" rev-parse HEAD) || { echo "error: cannot re-read isolated build HEAD" >&2; exit 3; }
